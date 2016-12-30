@@ -18,17 +18,17 @@ var players={};
 
 game.set('views','./public');
 game.set('view engine','pug');
-app.use(bodyParser.urlencoded({extended:false}));
+game.use(bodyParser.urlencoded({extended:false}));
 game.use(cookieParser());
 
 game.get('/',function(req,res){
 	if(req.cookies.username){
 		var username = req.cookies.username;
 		var password = req.cookies.password;
-		if(!users[username]){
+		if(!players[username]){
 			//create new user
-			users[username] = {"password":password};
-		}else if(users[username].password != password){
+			players[username] = {"password":password};
+		}else if(players[username].password != password){
 			//return error
 			res.sendStatus(401);
 			return;
@@ -39,7 +39,7 @@ game.get('/',function(req,res){
 	}
 });
 
-app.post("/signin", function(req, res){
+game.post("/signin", function(req, res){
 	var username = req.body.username;
 	var password = req.body.password;
 	res.cookie("username",username);
