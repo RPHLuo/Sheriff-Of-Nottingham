@@ -31,12 +31,32 @@ game.use(function(req,res, next){
 	console.log('request for ' + req.url);
 	next();
 });
-//checks if user have sign in cookie, if not then redirect to sign up page
-game.get('/',function(req,res){
-	authentication.signin(req,res,players);
+game.get("/", function(req, res){
+	if(req.cookies.username){
+		var username = req.cookies.username;
+		var password = req.cookies.password;
+		if(players[username].password != password){
+			//return error
+			res.sendStatus(401);
+			return;
+		}
+		res.render('index');
+	}else{
+		res.render("signup");
+	}
 });
-game.post('/signup',function(req,res){
-	authentication.signup(req,res,players);
+
+game.post("/signup", function(req, res){
+	var username = req.body.username;
+	var password = req.body.password;
+	if(players[username]){
+		res.sendStatus(401);
+	}else{
+		res.cookie("username",username);
+		res.cookie("password",password);
+		players[username] = {"password":password};
+		res.sendStatus(200);
+	}
 });
 
 
@@ -45,7 +65,13 @@ game.post('/signup',function(req,res){
 //game behaviour
 
 game.get('/start',function(req,res){
-	
+	var username = req.cookies.username;
+	players[username]["ready"]=true;
+	if(players.length>3){
+		for(var i=0;i<players.length;i++){
+			
+		}
+	}
 });
 
 
@@ -84,5 +110,5 @@ game.get('*',function(){
 });
 
 game.listen(2406, function(){
-	console.log("Server is listening on port 2000");
+	console.log("Server is listening on port 2406");
 });

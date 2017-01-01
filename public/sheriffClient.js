@@ -4,14 +4,14 @@ $(Document).ready(function(){
 	//buttons from UI
 });
 function update(){
-	$.ajax{
+	$.ajax({
 		method:"GET",
 		url:"/update",
 		datatype:'json',
 		success:function(data){
 			//update info
 		}
-	}
+	});
 }
 
 
@@ -19,44 +19,44 @@ function update(){
 //smuggler actions
 function bribe(){
 	//input amount
-	$.ajax{
+	$.ajax({
 		method:"POST",
 		url:"/bribe",
 		datatype: 'json',
 		success:function(data){
 			//check if bribe is taken
 		}
-	}
+	});
 }
 function store(){
-	$.ajax{
+	$.ajax({
 		method:"POST",
 		url:"/store",
 		datatype: 'json',
 		success:function(data){
 			//check if bribe is taken
 		}
-	}
+	});
 }
 //sheriff actions
 function check(){
 	//input amount
-	$.ajax{
+	$.ajax({
 		method:"POST",
 		url:"/check",
 		datatype: 'json',
 		success:function(data){
 			//check if bribe is taken
 		}
-	}
+	});
 }
 function letGo(){
-	$.ajax{
+	$.ajax({
 		method:"POST",
 		url:"/letGo",
 		datatype: 'json',
 		success:function(data){
 			//check if bribe is taken
 		}
-	}
+	});
 }
