@@ -2,6 +2,15 @@
 var status,gold,contraband=[],apples=[],cheese=[],bread=[],chicken=[];
 $(Document).ready(function(){
 	//buttons from UI
+	$("#ready").click(function(){
+		$.ajax({
+			method:"GET",
+			url:"/start",
+			success:function(data){
+				
+			}
+		});
+	});
 });
 function update(){
 	$.ajax({
