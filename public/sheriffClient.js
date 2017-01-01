@@ -1,3 +1,4 @@
+//sample client code
 var status,gold,contraband=[],apples=[],cheese=[],bread=[],chicken=[];
 $(Document).ready(function(){
 	//buttons from UI
@@ -12,6 +13,9 @@ function update(){
 		}
 	}
 }
+
+
+
 //smuggler actions
 function bribe(){
 	//input amount

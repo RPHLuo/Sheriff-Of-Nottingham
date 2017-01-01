@@ -2,15 +2,22 @@
 //game of Nottingham game
 //Interactive web app to run game of Nottingham
 
-var url = require('fs');
-var cards = require('./resources/cards');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 var express = require("express");
 var game = express();
-var mongodb = require('mongodb')
-var mongoClient = mongodb.MongoClient;
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var cards = require('./resources/cards');
+var chat = require('./resources/chat');
+var authentication = require('./resources/authentication');
+
+var http = require('http').createServer(game);
+var io = require('socket.io')(http);
+
+//var mongodb = require('mongodb')
+//var mongoClient = mongodb.MongoClient;
 var ROOT = './public';
+
+
 //shared resources
 var leftDeck=[],rightDeck=[],leftHeap=[],rightHeap=[];
 var players={};
@@ -20,33 +27,22 @@ game.set('views','./public');
 game.set('view engine','pug');
 game.use(bodyParser.urlencoded({extended:false}));
 game.use(cookieParser());
-
+game.use(function(req,res, next){
+	console.log('request for ' + req.url);
+	next();
+});
+//checks if user have sign in cookie, if not then redirect to sign up page
 game.get('/',function(req,res){
-	if(req.cookies.username){
-		var username = req.cookies.username;
-		var password = req.cookies.password;
-		if(!players[username]){
-			//create new user
-			players[username] = {"password":password};
-		}else if(players[username].password != password){
-			//return error
-			res.sendStatus(401);
-			return;
-		}
-		res.render('index');
-	}else{
-		res.render("signup");
-	}
+	authentication.signin(req,res,players);
+});
+game.post('/signup',function(req,res){
+	authentication.signup(req,res,players);
 });
 
-game.post("/signin", function(req, res){
-	var username = req.body.username;
-	var password = req.body.password;
-	res.cookie("username",username);
-	res.cookie("password",password);
-	res.sendStatus(200);
-});
 
+
+
+//game behaviour
 
 game.get('/start',function(req,res){
 	
@@ -78,7 +74,15 @@ game.post('/transport',function(req,res){
 //exchange resources
 game.post('/exchange',function(req,res){
 });
+
+//static handling
 game.use(express.static(ROOT));
-game.listen(2000, function(){
+
+game.get('*',function(){
+	//render 404 page
+	//render(404);
+});
+
+game.listen(2406, function(){
 	console.log("Server is listening on port 2000");
 });
