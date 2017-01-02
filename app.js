@@ -6,13 +6,13 @@ var express = require("express");
 var game = express();
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var cards = require('./resources/cards');
-//var chat = require('./resources/chat');
+var cards = require('./resources/cards');
+var chat = require('./resources/chat');
 var authentication = require('./resources/authentication');
 
 var http = require('http').createServer(game);
 var io = require('socket.io')(http);
-
+chat.connect(io);
 //var mongodb = require('mongodb')
 //var mongoClient = mongodb.MongoClient;
 var ROOT = './public';
@@ -41,17 +41,18 @@ game.post("/signup", function(req, res){
 
 
 
-
 //game behaviour
 
 game.get('/start',function(req,res){
 	var username = req.cookies.username;
 	players[username]["ready"]=true;
 	//if(players.length>3){
+		//if more than 3 people start game
 		for(var i in players){
 			console.log(i);
 		}
 	//}
+	res.sendStatus(200);
 });
 
 

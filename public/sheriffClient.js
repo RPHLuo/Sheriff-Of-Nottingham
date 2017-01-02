@@ -1,4 +1,3 @@
-//sample client code
 var status,gold,contraband=[],apples=[],cheese=[],bread=[],chicken=[];
 $(Document).ready(function(){
 	//buttons from UI
@@ -7,7 +6,8 @@ $(Document).ready(function(){
 			method:"GET",
 			url:"/start",
 			success:function(data){
-				
+				var socket = io();
+				connect(document.cookie,socket);
 			}
 		});
 	});
