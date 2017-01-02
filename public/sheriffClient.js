@@ -18,7 +18,7 @@ function update(){
 		datatype:'json',
 		success:function(data){
 			//update info
-			connect();
+			
 		}
 	});
 }
@@ -43,7 +43,7 @@ function store(){
 		url:"/store",
 		datatype: 'json',
 		success:function(data){
-			//check if bribe is taken
+			
 		}
 	});
 }
@@ -68,7 +68,4 @@ function letGo(){
 			//check if bribe is taken
 		}
 	});
-}
-function update(){
-	
 }

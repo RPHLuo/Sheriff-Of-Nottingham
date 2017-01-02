@@ -20,7 +20,7 @@ var ROOT = './public';
 
 
 //shared resources
-var leftDeck=[],rightDeck=[],leftHeap=[],rightHeap=[];
+var decks={"leftDeck":[],"rightDeck":[],"leftHeap":[],"rightHeap":[]};
 var players={};
 
 game.set('views','./public');
@@ -49,10 +49,13 @@ game.get('/start',function(req,res){
 	if(players.length>3){
 		//if more than 3 people start game
 		for(var player in players){
-			console.log(player);
-			//define important variables
 			player.game=player.init();
 		}
+		decks.leftDeck=cards.createDeck();
+		for(var i=0;i<decks.leftDeck.length/2;i++){
+			decks.rightDeck.push(decks.leftDeck.pop());
+		}
+		chat.update();
 	}
 	res.sendStatus(200);
 });
@@ -62,8 +65,16 @@ game.get('/start',function(req,res){
 game.get('/update',function(req,res){
 	var username = req.cookies.username;
 	if(validate(req.cookies)){
-		var details;
-		details = players[username].game;
+		var results;
+		results.me = players[username].game;
+		results.decks = decks;
+		results.players={};
+		var player,playerDetails;
+		for(var username in players){
+			if(player!=username){
+				results.players[username]=players[username].game.publicInfo();
+			}
+		}
 		res.json(details);
 		res.sendStatus(200);
 	}else{
@@ -123,13 +134,22 @@ game.post('/letGo',function(req,res){
 //smuggler actions
 //bribe
 game.post('/bribe',function(req,res){
+	if(validate(req.cookies)){
+		var sheriffStats = players[sheriff].game;
+	}
 });
 //put goods in bag
-game.post('/transport',function(req,res){
-	
+game.post('/store',function(req,res){
+	if(validate(req.cookies)){
+		var sheriffStats = players[sheriff].game;
+		sheriffStats.store();
+	}
 });
 //exchange resources
 game.post('/exchange',function(req,res){
+	if(validate(req.cookies)){
+		var sheriffStats = players[sheriff].game;
+	}
 });
 
 //validate authentication

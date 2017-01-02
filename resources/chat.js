@@ -34,8 +34,12 @@ function connect(io,users){
 		}
 	});
 }
-function informUpdates(socket){
-	socket.emit("update");
+function informUpdates(users){
+	for(var user in users){
+		if(users[user].socket){
+			users[user].socket.emit('update');
+		}
+	}
 }
 exports.connect=connect;
 exports.update=informUpdates;

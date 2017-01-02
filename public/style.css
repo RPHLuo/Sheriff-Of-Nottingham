@@ -1,4 +1,6 @@
-
+*{
+	position: relative;
+}
 body{
 	background-color:#FFF;  
 	color:black;
@@ -9,35 +11,66 @@ h1{
 	text-shadow: 1px 2px #000;
 }
 button{
-	margin-top:5px;
-	border-radius:5px;
-	width:60px;
-	padding:4px;
+	width:5%;
+}
+
+
+
+#playerDiv{
+	margin:auto;
+	width:100%;
+	height:30%;
+	background-color:#f00;
 }
 #decksDiv{
+	display:flex;
 	width:100%;
-	height:15%;
+	height:30%;
+	background-color:#0f0;
+	text-align:center;
+	align-items:center;
+}
+#cardsDiv{
+	left: -10%;
 }
 .card{
-	width:5%;
-	height:10%;
+	left:8%;
+	margin:5%;
+	width:10%;
+	height:70%;
+	background-color:#000;
+	color:#fff;
+	float:right;
+	text-align:center;
 }
+#yourDiv{
+	margin:auto;
+	width:100%;
+	height:40%;
+	background-color:#00f;
+}
+#ready{
+	margin:auto;
+}
+
+
+
 #gameboard{
 	width:100%;
 	height:80%;
-	background-color:#00f;
 }
-#chatbox, #messagebar{
+#messagebar{
 	border: solid 1px black;
 	width: 100%;
 	height:5%;
-	background-color:#f00;
+	background-color:#787;
 }
 #chatbox{
+	border: solid 1px black;
+	width: 100%;
 	height: 15%;
-	background-color:#0f0;
+	background-color:#998;
 }
 #chat{
 	height 20%;
-	background-color:#f00;
 }
