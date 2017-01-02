@@ -6,7 +6,7 @@ $(Document).ready(function(){
 			method:"GET",
 			url:"/start",
 			success:function(data){
-				//connect();
+				connect();
 			}
 		});
 	});
@@ -18,6 +18,7 @@ function update(){
 		datatype:'json',
 		success:function(data){
 			//update info
+			connect();
 		}
 	});
 }
@@ -67,4 +68,7 @@ function letGo(){
 			//check if bribe is taken
 		}
 	});
+}
+function update(){
+	
 }

@@ -7,11 +7,12 @@ var game = express();
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cards = require('./resources/cards');
-//var chat = require('./resources/chat');
+var player = require('./resources/player');
+var chat = require('./resources/chat');
 //good
 var authentication = require('./resources/authentication');
 
-var http = require('http').Server(game);
+var http = require('http').createServer(game);
 var io = require('socket.io')(http);
 //var mongodb = require('mongodb')
 //var mongoClient = mongodb.MongoClient;
@@ -50,17 +51,7 @@ game.get('/start',function(req,res){
 		for(var player in players){
 			console.log(player);
 			//define important variables
-			player.game={};
-			player.game.money=50;
-			player.game.hand=[];
-			player.game.sachel=[];
-			player.game.declared="";
-			player.game.bribe=0;
-			player.game.apples=0;
-			player.game.cheese=0;
-			player.game.bread=0;
-			player.game.chicken=0;
-			player.game.contraband=[];
+			player.game=player.init();
 		}
 	}
 	res.sendStatus(200);
@@ -105,7 +96,20 @@ game.post('/check',function(req,res){
 					penalty+=good.penalty;
 				}
 			}
-			if(
+			smugglerStatus.softReset();
+			sheriffStatus.softReset();
+			var result;
+			if(!lying){
+				sheriffStats.money-=penalty;
+				smugglerStats.money+=penalty;
+				result = "Tricked again! You lost {penalty} coins for incorrect inspection";
+			}else{
+				sheriffStats.money+=penalty;
+				smugglerStats.money-=penalty;
+				result = "Gotcha! You caught them red handed. Nothing like a good profit";
+			}
+			res.json({"result":result});
+			res.sendStatus(200);
 		}
 	}else{
 		res.sendStatus(401);
@@ -113,6 +117,7 @@ game.post('/check',function(req,res){
 });
 //believe them
 game.post('/letGo',function(req,res){
+	
 });
 
 //smuggler actions
@@ -145,7 +150,8 @@ game.get('*',function(){
 	//render(404);
 });
 
-
-game.listen(2406, function(){
+var server = game.listen(2406, function(){
 	console.log("Server is listening on port 2406");
 });
+io.listen(server);
+chat.connect(io,players);
