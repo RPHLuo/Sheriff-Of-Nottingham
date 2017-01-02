@@ -6,8 +6,7 @@ $(Document).ready(function(){
 			method:"GET",
 			url:"/start",
 			success:function(data){
-				var socket = io();
-				connect(document.cookie,socket);
+				//connect();
 			}
 		});
 	});

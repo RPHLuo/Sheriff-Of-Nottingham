@@ -11,6 +11,13 @@ function connect(io,users){
 				users[username].socket=socket;
 			}
 		});
+		socket.on("messsage",function(data){
+			//app serves only 1 game currently
+			for(var user in users){
+				console.log(user);
+				user.socket.emit("message","{user.username}:"+data);
+			}
+		});
 		socket.on("disconnect", function(){
 			console.log(socket.username+" disconnected");
 			io.emit("message", timestamp()+": "+socket.username+" disconnected.");
