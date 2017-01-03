@@ -10,7 +10,26 @@ html
 		//no UI yet!
 		div#gameboard
 			div#playerDiv
-				
+				div.player#P1
+					p.player
+					p.money money:
+					p.apples apples:
+					p.cheese cheese:
+					p.bread bread:
+					p.chickens chickens:
+					p.contraband contraband:
+					p.bag bag:
+					p.declared declared:
+				div.player#P2
+					p.player
+					p.money money:
+					p.apples apples:
+					p.cheese cheese:
+					p.bread bread:
+					p.chickens chickens:
+					p.contraband contraband:
+					p.bag bag:
+					p.declared declared:
 			div#decksDiv
 				div.card#C1
 					p End of Pile
@@ -21,7 +40,71 @@ html
 				div.card#C4
 					p End of Pile
 			div#yourDiv
-				button#ready Ready!
+				div#active
+					div.cards#bag
+						p.title Bag:
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+					div.cards#hand
+						p.title Hand:
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+						div
+							p value: 10
+							p value: 10
+							p value: 10
+				div#stats
+					p.money money:
+					p.apples apples:
+					p.cheese cheese:
+					p.bread bread:
+					p.chickens chickens:
+					p.contraband contraband:
+					p.bag bag:
+					p.declared declared:
+					
+					
+					
 		div#chat
 			textarea#chatbox
 			div#input

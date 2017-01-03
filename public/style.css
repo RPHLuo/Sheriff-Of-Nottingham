@@ -15,18 +15,28 @@ button{
 }
 
 
-
 #playerDiv{
 	margin:auto;
 	width:100%;
 	height:30%;
-	background-color:#f00;
+	background-color:#bb4;
+	color:#008;
+}
+#playerDiv p{
+	margin:0px;
+	width:50%;
+	float:left;
+}
+.player{
+	width:30%
+	height:100%;
+	float:left;
 }
 #decksDiv{
 	display:flex;
 	width:100%;
 	height:30%;
-	background-color:#0f0;
+	background-color:#bb4;
 	text-align:center;
 	align-items:center;
 }
@@ -49,11 +59,41 @@ button{
 	height:40%;
 	background-color:#00f;
 }
-#ready{
-	margin:auto;
+#active{
+	height:100%;
+	width:50%;
+	float:left;
+	background-color:#bb4;
 }
-
-
+#active .cards{
+	display:flex;
+	height:50%;
+	width:100%;
+	background-color:#bb4;
+	text-align:left;
+}
+#active .cards div{
+	margin:5px;
+	width:15%;
+	float:left;
+	background-color:#fff;
+}
+.title{
+	margin:10px;
+	float:left;
+	color:#088;
+}
+#stats{
+	height:100%;
+	width:50%;
+	float:left;
+	text-align:left;
+	background-color:#f00;
+}
+#stats p{
+	margin:5px;
+	width:20%;
+}
 
 #gameboard{
 	width:100%;

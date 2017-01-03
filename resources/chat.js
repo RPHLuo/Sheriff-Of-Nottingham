@@ -3,9 +3,7 @@
 
 function connect(io,users){
 	io.on("connection", function(socket){
-		console.log("Got a connection");
 		socket.on("intro",function(data){
-			console.log("intro recieved");
 			var username = data.username;
 			var password = data.password;
 			if(users[username]&&users[username].password==password){
@@ -35,6 +33,7 @@ function connect(io,users){
 	});
 }
 function informUpdates(users){
+	console.log("inform updates");
 	for(var user in users){
 		if(users[user].socket){
 			users[user].socket.emit('update');

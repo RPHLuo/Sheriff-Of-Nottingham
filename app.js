@@ -22,6 +22,7 @@ var ROOT = './public';
 //shared resources
 var decks={"leftDeck":[],"rightDeck":[],"leftHeap":[],"rightHeap":[]};
 var players={};
+var activePlayers=0;
 
 game.set('views','./public');
 game.set('view engine','pug');
@@ -46,16 +47,15 @@ game.post("/signup", function(req, res){
 game.get('/start',function(req,res){
 	var username = req.cookies.username;
 	players[username]["ready"]=true;
-	if(players.length>3){
-		//if more than 3 people start game
-		for(var player in players){
-			player.game=player.init();
-		}
+	players[username].game= new player.init();
+	activePlayers++;
+	if(activePlayers>1){
+		//if more than 1 people start game
 		decks.leftDeck=cards.createDeck();
 		for(var i=0;i<decks.leftDeck.length/2;i++){
 			decks.rightDeck.push(decks.leftDeck.pop());
 		}
-		chat.update();
+		chat.update(players);
 	}
 	res.sendStatus(200);
 });
@@ -65,18 +65,17 @@ game.get('/start',function(req,res){
 game.get('/update',function(req,res){
 	var username = req.cookies.username;
 	if(validate(req.cookies)){
-		var results;
+		var results={};
 		results.me = players[username].game;
-		results.decks = decks;
+		results.heap1 = decks.leftHeap;
+		results.heap2 = decks.rightHeap;
 		results.players={};
-		var player,playerDetails;
-		for(var username in players){
-			if(player!=username){
-				results.players[username]=players[username].game.publicInfo();
+		for(var playername in players){
+			if(playername!=username && players[playername].game){
+				results.players[playername]=player.publicInfo(players[playername].game);
 			}
 		}
-		res.json(details);
-		res.sendStatus(200);
+		res.json(results);
 	}else{
 		res.sendStatus(401);
 	}
@@ -142,7 +141,7 @@ game.post('/bribe',function(req,res){
 game.post('/store',function(req,res){
 	if(validate(req.cookies)){
 		var sheriffStats = players[sheriff].game;
-		sheriffStats.store();
+		player.store(sheriffStats);
 	}
 });
 //exchange resources
