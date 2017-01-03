@@ -78,6 +78,9 @@ button{
 	float:left;
 	background-color:#fff;
 }
+#active .cards div p{
+	margin:0px;
+}
 .title{
 	margin:10px;
 	float:left;
@@ -88,13 +91,23 @@ button{
 	width:50%;
 	float:left;
 	text-align:left;
-	background-color:#f00;
+	background-color:#bb4;
 }
 #stats p{
 	margin:5px;
-	width:20%;
+	width:40%;
+	float:left;
 }
-
+#stats textarea{
+	height:10%;
+	width:100%;
+}
+#stats button{
+	height:15%;
+	width:25%;
+	float:right;
+	background-color:#088;
+}
 #gameboard{
 	width:100%;
 	height:80%;
