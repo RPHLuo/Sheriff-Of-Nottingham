@@ -1,10 +1,10 @@
 function player(){
 	this.money=50;
 	this.hand=[];
-	this.sachel=[];
+	this.bag=[];
 	this.declared="";
 	this.bribe=[];
-	this.apples=0;
+	this.apple=0;
 	this.cheese=0;
 	this.bread=0;
 	this.chicken=0;
@@ -12,13 +12,13 @@ function player(){
 }
 //prepares for next round
 function softReset(player){
-	player.sachel=[];
+	player.bag=[];
 	player.declared="";
 	player.bribe=[];
 }
 //sell goods for monetary value
 function selloff(good,player){
-	if(player.apples==0&&player.cheese==0&&player.bread==0&&player.chicken==0){
+	if(player.apple==0&&player.cheese==0&&player.bread==0&&player.chicken==0){
 		//sell off contraband
 		var contraband;
 		while(!this.contraband.isEmpty){
@@ -29,44 +29,117 @@ function selloff(good,player){
 			}
 		}
 	}else{
-		if(good=='apples'){
+		if(good=='apple'){
 			var amount = Math.ceil(this.money/2);
-			player.apples-=amount;
+			player.apple-=amount;
 			player.money+=amount*2;
 		}else if(good=='cheese'){
 			var amount = Math.ceil(this.money/3);
-			player.apples-=amount;
+			player.cheese-=amount;
 			player.money+=amount*3;
 		}else if(good=='bread'){
 			var amount = Math.ceil(this.money/3);
-			player.apples-=amount;
+			player.bread-=amount;
 			player.money+=amount*3;
 		}else if(good=='chicken'){
 			var amount = Math.ceil(this.money/4);
-			player.apples-=amount;
+			player.chicken-=amount;
 			player.money+=amount*4;
 		}
 	}
 }
-function store(goods,player){
+function store(player){
+	var goods = player.bag;
 	var index,card;
 	for(var good in goods){
 		index = player.hand.find(good);
 		if(index){
 			card=player.hand.splice(index,1)[0];
-			player.sachel.push(card);
+			player.bag.push(card);
 		}
 	}
 }
+
+function check(smuggler,sheriff,players,decks){
+	var smugglerStats = players[smuggler].game;
+	var declared = smugglerStats.declared;
+	var sheriffStats = players[sheriff].game;
+	var lying=false;
+	var penalty=0;
+	//forfeit any bribes
+	for(var bribe in player.bribe){
+		addGood(sheriff,bribe);
+	}
+	for(var good in smugglerStats.bag){
+		if(good.name!=declared){
+			//reset penalty to start being incurred to smuggler
+			if(!lying){
+				penalty=0;
+			}
+			lying=true;
+			//discard the good
+			if(decks.leftHeap>decks.rightHeap){
+				decks.rightHeap.push(good);
+			}else{
+				decks.leftHeap.push(good);
+			}
+			penalty+=good.penalty;
+		}else{
+			//if player has been consistently truthful add more penalty
+			if(!lying){
+				penalty+=good.penalty;
+			}
+		}
+		passThrough(smuggler);
+		var result;
+		if(!lying){
+			sheriffStats.money-=penalty;
+			smugglerStats.money+=penalty;
+			result = "Tricked again! You lost {penalty} coins for incorrect inspection";
+		}else{
+			sheriffStats.money+=penalty;
+			smugglerStats.money-=penalty;
+			result = "Gotcha! You caught them red handed. Nothing like a good profit";
+		}
+		return{"result":result};
+	}
+	function passThrough(player,sheriff){
+		for(var bribe in player.bribe){
+			addGood(sheriff,bribe);
+		}
+		var bag = player.bag;
+		for(var good in bag){
+			addGood(player,good);
+		}
+		player.softReset();
+	}
+	function addGood(player,good){
+		if(good.name=='apple'){
+			player.apple++;
+		}else if(good.name=='cheese'){
+			player.cheese++;
+		}else if(good.name=='bread'){
+			player.bread++;
+		}else if(good.name=='chicken'){
+			player.chicken++;
+		}else if good.name=='money'{
+			player.money+=good.value;
+		}else{
+			player.contraband.push(good);
+		}
+	}
+}
+
+
 function publicInfo(player){
 	var details={};
 	details.money=player.money;
-	details.apples=player.apples;
+	details.apple=player.apple;
 	details.cheese=player.cheese;
 	details.bread=player.bread;
 	details.chicken=player.chicken;
 	details.contraband=player.contraband.length;
-	details.sachel=player.sachel.length;
+	details.bag=player.bag.length;
 	details.declared=player.declared;
 	return details;
 }
@@ -75,3 +148,4 @@ exports.softReset=softReset;
 exports.selloff=selloff;
 exports.store=store;
 exports.publicInfo=publicInfo;
+exports.passThrough=passThrough;

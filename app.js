@@ -28,10 +28,14 @@ game.set('views','./public');
 game.set('view engine','pug');
 game.use(bodyParser.urlencoded({extended:false}));
 game.use(cookieParser());
+
+
+//states the request
 game.use(function(req,res, next){
 	console.log('request for ' + req.url);
 	next();
 });
+//sign in
 game.get("/", function(req, res){
 	authentication.signin(req,res,players);
 });
@@ -52,8 +56,16 @@ game.get('/start',function(req,res){
 	if(activePlayers>1){
 		//if more than 1 people start game
 		decks.leftDeck=cards.createDeck();
+		console.log(decks.leftDeck);
 		for(var i=0;i<decks.leftDeck.length/2;i++){
-			decks.rightDeck.push(decks.leftDeck.pop());
+			decks.rightDeck.push(decks.leftDeck[decks.leftDeck.length-1]);
+			decks.leftDeck.pop();
+		}
+		for(var i=0;i<5;i++){
+			decks.leftHeap.push(decks.leftDeck[decks.leftDeck.length-1]);
+			decks.rightHeap.push(decks.rightDeck[decks.rightDeck.length-1]);
+			decks.leftDeck.pop();
+			decks.rightDeck.pop();
 		}
 		chat.update(players);
 	}
@@ -69,6 +81,8 @@ game.get('/update',function(req,res){
 		results.me = players[username].game;
 		results.heap1 = decks.leftHeap;
 		results.heap2 = decks.rightHeap;
+		results.deck1 = decks.leftDeck.length;
+		results.deck2 = decks.rightDeck.length;
 		results.players={};
 		for(var playername in players){
 			if(playername!=username && players[playername].game){
@@ -87,67 +101,47 @@ game.post('/check',function(req,res){
 	var smuggler = req.body.username;
 	var sheriff = req.cookies.username;
 	if(validate(req.cookies)){
-		var smugglerStats = players[smuggler].game;
-		var declared = smugglerStats.declared;
-		var sheriffStats = players[sheriff].game;
-		var lying=false;
-		var penalty=0;
-		for(var good in smugglerStats.sachel){
-			if(good.name!=declared){
-				//reset penalty to start being incurred to smuggler
-				if(!lying){
-					penalty=0;
-				}
-				lying=true;
-				penalty+=good.penalty;
-			}else{
-				//if player has been consistently truthful add more penalty
-				if(!lying){
-					penalty+=good.penalty;
-				}
-			}
-			smugglerStatus.softReset();
-			sheriffStatus.softReset();
-			var result;
-			if(!lying){
-				sheriffStats.money-=penalty;
-				smugglerStats.money+=penalty;
-				result = "Tricked again! You lost {penalty} coins for incorrect inspection";
-			}else{
-				sheriffStats.money+=penalty;
-				smugglerStats.money-=penalty;
-				result = "Gotcha! You caught them red handed. Nothing like a good profit";
-			}
-			res.json({"result":result});
-			res.sendStatus(200);
-		}
+		res.json(player.check(smuggler,sheriff,players,decks));
 	}else{
 		res.sendStatus(401);
 	}
 });
 //believe them
 game.post('/letGo',function(req,res){
-	
+	if(validate(req.cookies)){
+		var smuggler = players[req.body.username];
+		var sheriff = players[req.cookies.username];
+		player.passThrough(smuggler,sheriff);
+	}else{
+		res.sendStatus(401);
+	}
 });
 
 //smuggler actions
-//bribe
+//bribe sheriff with goods or money
 game.post('/bribe',function(req,res){
 	if(validate(req.cookies)){
 		var sheriffStats = players[sheriff].game;
+		
+	}else{
+		res.sendStatus(401);
 	}
 });
 //put goods in bag
 game.post('/store',function(req,res){
 	if(validate(req.cookies)){
-		var sheriffStats = players[sheriff].game;
-		player.store(sheriffStats);
+		var player = players[req.cookies.username].game;
+		player.store(player);
+	}else{
+		res.sendStatus(401);
 	}
 });
 //exchange resources
 game.post('/exchange',function(req,res){
 	if(validate(req.cookies)){
 		var sheriffStats = players[sheriff].game;
+	}else{
+		res.sendStatus(401);
 	}
 });
 
@@ -165,8 +159,7 @@ function validate(cookie){
 game.use(express.static(ROOT));
 
 game.get('*',function(){
-	//render 404 page
-	//render(404);
+	render('signup');
 });
 
 var server = game.listen(2406, function(){

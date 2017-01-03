@@ -74,15 +74,24 @@ function createDeck(){
 	shuffle(deck);
 	return deck;
 }
-//takes an array and randomly shuffles the deck like quicksort
-function shuffle(deck){
-	var pivot,temp;
-	for(var i=0;i<deck.length;i++){
-		pivot=Math.random()*deck.length;
-		temp=deck[i];
-		deck[i]=deck[pivot];
-		deck[pivot]=temp;
-	}
+//Fisher-Yates shuffle algorithm --taken from online
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
 
 exports.apple=apple;

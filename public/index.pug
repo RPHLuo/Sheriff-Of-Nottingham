@@ -20,6 +20,7 @@ html
 					p.contraband contraband:
 					p.bag bag:
 					p.declared declared:
+					p.action action:
 				div.player#P2
 					p.player
 					p.money money:
@@ -30,6 +31,7 @@ html
 					p.contraband contraband:
 					p.bag bag:
 					p.declared declared:
+					p.action action:
 			div#decksDiv
 				div.card#C1
 					p End of Pile
@@ -43,56 +45,12 @@ html
 				div#active
 					div.cards#bag
 						p.title Bag:
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
 					div.cards#hand
 						p.title Hand:
 						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
-						div
-							p value: 10
-							p value: 10
-							p value: 10
+							p value: 6
+							p Mead
+							p penalty: 4
 				div#stats
 					p.money money:
 					p.apples apples:
@@ -100,8 +58,10 @@ html
 					p.bread bread:
 					p.chickens chickens:
 					p.contraband contraband:
-					p.bag bag:
 					p.declared declared:
+					p.action action:
+					p.selectedFood selectedFood:
+					p.selectedPlayer selectedPlayer:
 					textarea#amount
 					div#goodTypes
 						button#apple apple
@@ -113,6 +73,7 @@ html
 						button#bribe bribe
 						button#check check
 						button#letGo let go
+						button#clear clear
 					
 					
 		div#chat
