@@ -23,6 +23,8 @@ var ROOT = './public';
 //shared resources
 var decks={"leftDeck":[],"rightDeck":[],"leftHeap":[],"rightHeap":[]};
 var players={};
+var playerOrder=[];
+var currentSheriff;
 var activePlayers=0;
 
 game.set('views','./public');
@@ -54,7 +56,17 @@ game.get('/start',function(req,res){
 	players[username]["ready"]=true;
 	players[username].game= new player.init();
 	activePlayers++;
+	//change to 2 or 3 in the future, 1 is for testing purposes
 	if(activePlayers>1){
+		//remove people not in game since app only serves 1 game for now
+		for(var playername in players){
+			if(!players[playername].ready){
+				delete players[playername];
+			}else{
+				playerOrder.push(playername);
+			}
+		}
+		currentSheriff=playerOrder[playerOrder.length-1];
 		//if more than 1 people start game
 		decks.leftDeck=cards.createDeck();
 		for(var i=0;i<decks.leftDeck.length/2;i++){
@@ -166,8 +178,8 @@ game.post('/take',function(req,res){
 game.post('/discard',function(req,res){
 	if(validate(req.cookies)){
 		var playerGame = players[req.cookies.username].game;
-		console.log(req.body);
-		player.discard(playerGame,deck);
+		var deck = findDeck(req.body.deck);
+		player.discard(playerGame,req.body.name,deck);
 	}else{
 		res.sendStatus(401);
 	}

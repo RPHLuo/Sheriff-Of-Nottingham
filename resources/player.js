@@ -10,8 +10,8 @@ function player(){
 	this.chicken=0;
 	this.contraband=[];
 	//possible actions:
-	//sheriff, wait, exchange, next
-	this.action='';
+	//sheriff, wait, exchange, store, next
+	this.action='next';
 }
 //prepares for next round
 function softReset(player){
@@ -154,8 +154,14 @@ function take(player,from){
 	player.hand.push(from.pop());
 }
 
-function discard(player,from,to){
-
+function discard(player,name,deck){
+	for(var i=0;i<player.hand.length;i++){
+		if(player.hand[i].name==name){
+			break;
+		}
+	}
+	deck.push(player.hand[i]);
+	player.hand.splice(i, 1);
 }
 
 exports.init=player;

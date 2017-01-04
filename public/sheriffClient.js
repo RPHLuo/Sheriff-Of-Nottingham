@@ -1,4 +1,4 @@
-var action,selectedFood,selectedPlayer,selectedElement,bag=[],hand=[];
+var action,selectedFood,selectedPlayer='',selectedElement='',bag=[],hand=[];
 $(document).ready(function(){
 	//buttons from UI
 	connect();
@@ -15,19 +15,24 @@ $(document).ready(function(){
 function activateActions(){
 	$('#apple').click(function(){
 		selectedFood='apple';
+		updateSelected();
 	});
 	$('#cheese').click(function(){
 		selectedFood='cheese';
+		updateSelected();
 	});
 	$('#bread').click(function(){
 		selectedFood='bread';
+		updateSelected();
 	});
 	$('#chicken').click(function(){
 		selectedFood='chicken';
+		updateSelected();
 	});
 	$('#clear').click(function(){
 		selectedFood='';
 		selectedPlayer='';
+		updateSelected();
 	});
 	$('#store').click(function(){
 		store(bag);
@@ -41,6 +46,10 @@ function activateActions(){
 	$('#check').click(function(){
 		check(selectedPlayer);
 	});
+	function updateSelected(){
+		$('.selectedFood').text('selectedFood: '+selectedFood);
+		$('.selectedPlayer').text('selectedPlayer: '+selectedPlayer);
+	}
 }
 function activateCard(element){
 	element.unbind();
@@ -62,6 +71,15 @@ function activateCard(element){
 			if(element.attr('class')=='card'){
 				if(hand.length<6/*&&action=='exchange'*/){
 					exchange(element.attr('id'))
+				}
+			//store in bag
+			}else if(action=='store'){
+				if(element.parent.attr('id')=='bag'){
+					element.detach();
+					$('#hand').append(element);
+				}else if(element.parent.attr('id')=='hand'){
+					element.detach();
+					$('#bag').append(element);
 				}
 			//prepare for discard
 			}else{
@@ -142,9 +160,10 @@ function updateInventory(div,arr,name){
 		penalty=good.penalty;
 		curDiv=$('<div></div>');
 		curDiv.append('<p>value: '+value+'</p>');
-		curDiv.append('<p>'+name+'</p>');
+		curDiv.append('<p class="name">'+name+'</p>');
 		curDiv.append('<p>penalty: '+penalty+'</p>');
 		div.append(curDiv);
+		activateCard(div);
 	}
 }
 //function to update each deck
@@ -177,11 +196,12 @@ function updateDeck(div,data,faceDown){
 function exchange(from,to){
 	//discard
 	if(to){
+		var name = from.children('.name').text();
 		$.ajax({
 			method:'POST',
 			url:'/discard',
 			datatype: 'json',
-			data:{'from':from,'deck':to}
+			data:{'name':name,'deck':to}
 		});
 	}else{
 	//take from
