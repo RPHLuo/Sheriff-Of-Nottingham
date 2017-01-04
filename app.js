@@ -66,7 +66,8 @@ game.get('/start',function(req,res){
 				playerOrder.push(playername);
 			}
 		}
-		currentSheriff=playerOrder[playerOrder.length-1];
+		currentSheriff=playerOrder[0];
+		players[playerOrder[1]].game.action='exchange';
 		//if more than 1 people start game
 		decks.leftDeck=cards.createDeck();
 		for(var i=0;i<decks.leftDeck.length/2;i++){
@@ -113,7 +114,9 @@ game.post('/check',function(req,res){
 	var smuggler = req.body.username;
 	var sheriff = req.cookies.username;
 	if(validate(req.cookies)){
-		res.json(player.check(smuggler,sheriff,players,decks));
+		var results = player.check(smuggler,sheriff,players,decks);
+		chat.update(players);
+		res.json(results);
 	}else{
 		res.sendStatus(401);
 	}
@@ -124,6 +127,8 @@ game.post('/letGo',function(req,res){
 		var smuggler = players[req.body.username];
 		var sheriff = players[req.cookies.username];
 		player.passThrough(smuggler,sheriff);
+		chat.update(players);
+		res.sendStatus(200);
 	}else{
 		res.sendStatus(401);
 	}
@@ -139,11 +144,14 @@ game.post('/bribe',function(req,res){
 		res.sendStatus(401);
 	}
 });
-//put goods in bag
+//put goods in bag then allows the next player to exchange
 game.post('/store',function(req,res){
 	if(validate(req.cookies)){
 		var smuggler = players[req.cookies.username].game;
 		player.store(smuggler);
+		player.nextUp(currentSheriff,playOrder,players);
+		chat.update(players);
+		res.sendStatus(200);
 	}else{
 		res.sendStatus(401);
 	}

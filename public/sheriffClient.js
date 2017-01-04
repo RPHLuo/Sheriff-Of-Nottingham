@@ -1,4 +1,4 @@
-var action,selectedFood,selectedPlayer='',selectedElement='',bag=[],hand=[];
+var action,selectedFood='',selectedPlayer='',selectedElement,bag=[],hand=[];
 $(document).ready(function(){
 	//buttons from UI
 	connect();
@@ -47,11 +47,30 @@ function activateActions(){
 	$('#check').click(function(){
 		check(selectedPlayer);
 	});
-	function updateSelected(){
-		$('.selectedFood').text('selectedFood: '+selectedFood);
-		$('.selectedPlayer').text('selectedPlayer: '+selectedPlayer);
-	}
 }
+//updated text in #stats
+function updateSelected(){
+	$('.selectedFood').text('selectedFood: '+selectedFood);
+	$('.selectedPlayer').text('selectedPlayer: '+selectedPlayer);
+}
+//add custom buttons to select different players
+function getPlayerButtons(){
+	$('#buttons').children('.removable').each(function(){
+		this.remove();
+	});
+	$('#playerDiv').find('.playername').each(function(){
+		if($(this).text()!=''){
+			var button = $('<button>'+$(this).text()+'</button>');
+			button.addClass('removable');
+			button.click(function(){
+				selectedPlayer=$(this).text();
+				updateSelected();
+			});
+			$('#buttons').append(button);
+		}
+	});
+}
+//allows card to be interacted, add click event handler
 function activateCard(element){
 	element.unbind();
 	element.click(function(){
@@ -59,18 +78,18 @@ function activateCard(element){
 			if(selectedElement==element){
 				selectedElement=undefined;
 			}else{
-				//if(action=='exchange){
+				if(action=='exchange'){
 					//discard
 					discard(selectedElement,element.attr('id'));
 					selectedElement=undefined;
-				//}else{
-					//selectedElement=undefined;
-				//}
+				}else{
+					selectedElement=undefined;
+				}
 			}
 		}else{
 			//take card
 			if(element.attr('class')=='card'){
-				if(hand.length<6/*&&action=='exchange'*/){
+				if(hand.length<6&&action=='exchange'){
 					take(element.attr('id'))
 				}
 			//store in bag
@@ -107,7 +126,7 @@ function update(){
 				}else{
 					element = $('#P2');
 				}
-				element.children('.player').text(username);
+				element.children('.playername').text(username);
 				element.children('.money').text('money: '+player.money);
 				element.children('.apples').text('apples: '+player.apple);
 				element.children('.cheese').text('cheese: '+player.cheese);
@@ -144,6 +163,7 @@ function update(){
 			updateDeck($('#C4'),data.deck2,true);
 			updateDeck($('#C2'),data.heap1,false);
 			updateDeck($('#C3'),data.heap2,false);
+			getPlayerButtons();
 		}
 	});
 }

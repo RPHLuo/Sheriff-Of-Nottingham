@@ -11,7 +11,7 @@ function player(){
 	this.contraband=[];
 	//possible actions:
 	//sheriff, wait, exchange, store, next
-	this.action='next';
+	this.action='wait';
 }
 //prepares for next round
 function softReset(player){
@@ -52,6 +52,7 @@ function selloff(good,player){
 		}
 	}
 }
+//store goods in bag
 function store(player){
 	var goods = player.bag;
 	var index,card;
@@ -64,7 +65,7 @@ function store(player){
 	}
 	player.action='wait';
 }
-
+//check smuggler if he is lying
 function check(smuggler,sheriff,players,decks){
 	var smugglerStats = players[smuggler].game;
 	var declared = smugglerStats.declared;
@@ -109,6 +110,7 @@ function check(smuggler,sheriff,players,decks){
 		return{"result":result};
 	}
 }
+//let the smuggler go through or if checked let the truthful goods pass
 function passThrough(player,sheriff){
 	for(var bribe in player.bribe){
 		addGood(sheriff,bribe);
@@ -163,7 +165,23 @@ function discard(player,name,deck){
 	deck.push(player.hand[i]);
 	player.hand.splice(i, 1);
 }
-
+function next(sheriff,order,players){
+	var nextPlayer;
+	for(var i=0;i<order.length;i++){
+		if(players[order[i]].game.action=='exchange'){
+			nextPlayer=order[(i+1)%order.length]
+			players[order[i]].game.action='wait';
+		}
+	}
+	if(nextPlayer){
+		if(players[nextPlayer].game.action=='sheriff'){
+			//allow the sheriff to start
+			players[nextPlayer].game.action='sheriff-insp';
+		}else{
+			players[nextPlayer].game.action='exchange';
+		}
+	}
+}
 exports.init=player;
 exports.softReset=softReset;
 exports.selloff=selloff;
@@ -172,3 +190,5 @@ exports.publicInfo=publicInfo;
 exports.passThrough=passThrough;
 exports.take=take;
 exports.discard=discard;
+exports.check=check;
+exports.nextUp=next;
