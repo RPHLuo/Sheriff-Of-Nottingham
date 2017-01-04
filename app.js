@@ -14,6 +14,7 @@ var authentication = require('./resources/authentication');
 
 var http = require('http').createServer(game);
 var io = require('socket.io')(http);
+//transfer to use mongo put on backlog
 //var mongodb = require('mongodb')
 //var mongoClient = mongodb.MongoClient;
 var ROOT = './public';
@@ -56,7 +57,6 @@ game.get('/start',function(req,res){
 	if(activePlayers>1){
 		//if more than 1 people start game
 		decks.leftDeck=cards.createDeck();
-		console.log(decks.leftDeck);
 		for(var i=0;i<decks.leftDeck.length/2;i++){
 			decks.rightDeck.push(decks.leftDeck[decks.leftDeck.length-1]);
 			decks.leftDeck.pop();
@@ -118,7 +118,7 @@ game.post('/letGo',function(req,res){
 });
 
 //smuggler actions
-//bribe sheriff with goods or money
+//bribe sheriff with goods or money NOT DONE
 game.post('/bribe',function(req,res){
 	if(validate(req.cookies)){
 		var sheriffStats = players[sheriff].game;
@@ -130,16 +130,44 @@ game.post('/bribe',function(req,res){
 //put goods in bag
 game.post('/store',function(req,res){
 	if(validate(req.cookies)){
-		var player = players[req.cookies.username].game;
-		player.store(player);
+		var smuggler = players[req.cookies.username].game;
+		player.store(smuggler);
 	}else{
 		res.sendStatus(401);
 	}
 });
-//exchange resources
-game.post('/exchange',function(req,res){
+
+function findDeck(deckName){
+	var deck;
+	if(deckName=="C1"){
+		deck = decks.leftDeck;
+	}else if(deckName=="C2"){
+		deck = decks.leftHeap;
+	}else if(deckName=="C3"){
+		deck = decks.rightHeap;
+	}else if(deckName=="C4"){
+		deck = decks.rightDeck;
+	}
+	return deck;
+}
+//take
+game.post('/take',function(req,res){
 	if(validate(req.cookies)){
-		var sheriffStats = players[sheriff].game;
+		var smuggler = players[req.cookies.username].game;
+		var deck = findDeck(req.body.deck);
+		player.take(smuggler,deck);
+		chat.update(players);
+		res.sendStatus(200);
+	}else{
+		res.sendStatus(401);
+	}
+});
+//discard
+game.post('/discard',function(req,res){
+	if(validate(req.cookies)){
+		var playerGame = players[req.cookies.username].game;
+		console.log(req.body);
+		player.discard(playerGame,deck);
 	}else{
 		res.sendStatus(401);
 	}
@@ -158,8 +186,8 @@ function validate(cookie){
 //static handling
 game.use(express.static(ROOT));
 
-game.get('*',function(){
-	render('signup');
+game.get('*',function(req,res){
+	res.render('signup');
 });
 
 var server = game.listen(2406, function(){

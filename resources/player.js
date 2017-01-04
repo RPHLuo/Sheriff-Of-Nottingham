@@ -2,19 +2,23 @@ function player(){
 	this.money=50;
 	this.hand=[];
 	this.bag=[];
-	this.declared="";
+	this.declared='';
 	this.bribe=[];
 	this.apple=0;
 	this.cheese=0;
 	this.bread=0;
 	this.chicken=0;
 	this.contraband=[];
+	//possible actions:
+	//sheriff, wait, exchange, next
+	this.action='';
 }
 //prepares for next round
 function softReset(player){
 	player.bag=[];
-	player.declared="";
+	player.declared='';
 	player.bribe=[];
+	player.action='next';
 }
 //sell goods for monetary value
 function selloff(good,player){
@@ -58,6 +62,7 @@ function store(player){
 			player.bag.push(card);
 		}
 	}
+	player.action='wait';
 }
 
 function check(smuggler,sheriff,players,decks){
@@ -95,38 +100,38 @@ function check(smuggler,sheriff,players,decks){
 		if(!lying){
 			sheriffStats.money-=penalty;
 			smugglerStats.money+=penalty;
-			result = "Tricked again! You lost {penalty} coins for incorrect inspection";
+			result = 'Tricked again! You lost {penalty} coins for incorrect inspection';
 		}else{
 			sheriffStats.money+=penalty;
 			smugglerStats.money-=penalty;
-			result = "Gotcha! You caught them red handed. Nothing like a good profit";
+			result = 'Gotcha! You caught them red handed. Nothing like a good profit';
 		}
 		return{"result":result};
 	}
-	function passThrough(player,sheriff){
-		for(var bribe in player.bribe){
-			addGood(sheriff,bribe);
-		}
-		var bag = player.bag;
-		for(var good in bag){
-			addGood(player,good);
-		}
-		player.softReset();
+}
+function passThrough(player,sheriff){
+	for(var bribe in player.bribe){
+		addGood(sheriff,bribe);
 	}
-	function addGood(player,good){
-		if(good.name=='apple'){
-			player.apple++;
-		}else if(good.name=='cheese'){
-			player.cheese++;
-		}else if(good.name=='bread'){
-			player.bread++;
-		}else if(good.name=='chicken'){
-			player.chicken++;
-		}else if good.name=='money'{
-			player.money+=good.value;
-		}else{
-			player.contraband.push(good);
-		}
+	var bag = player.bag;
+	for(var good in bag){
+		addGood(player,good);
+	}
+	player.softReset();
+}
+function addGood(player,good){
+	if(good.name=='apple'){
+		player.apple++;
+	}else if(good.name=='cheese'){
+		player.cheese++;
+	}else if(good.name=='bread'){
+		player.bread++;
+	}else if(good.name=='chicken'){
+		player.chicken++;
+	}else if (good.name=='money'){
+		player.money+=good.value;
+	}else{
+		player.contraband.push(good);
 	}
 }
 
@@ -141,11 +146,23 @@ function publicInfo(player){
 	details.contraband=player.contraband.length;
 	details.bag=player.bag.length;
 	details.declared=player.declared;
+	details.action=player.action;
 	return details;
 }
+
+function take(player,from){
+	player.hand.push(from.pop());
+}
+
+function discard(player,from,to){
+
+}
+
 exports.init=player;
 exports.softReset=softReset;
 exports.selloff=selloff;
 exports.store=store;
 exports.publicInfo=publicInfo;
 exports.passThrough=passThrough;
+exports.take=take;
+exports.discard=discard;
