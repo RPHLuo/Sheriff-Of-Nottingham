@@ -180,6 +180,8 @@ game.post('/discard',function(req,res){
 		var playerGame = players[req.cookies.username].game;
 		var deck = findDeck(req.body.deck);
 		player.discard(playerGame,req.body.name,deck);
+		chat.update(players);
+		res.sendStatus(200);
 	}else{
 		res.sendStatus(401);
 	}

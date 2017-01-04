@@ -32,6 +32,7 @@ function activateActions(){
 	$('#clear').click(function(){
 		selectedFood='';
 		selectedPlayer='';
+		selectedElement=undefined;
 		updateSelected();
 	});
 	$('#store').click(function(){
@@ -54,23 +55,23 @@ function activateActions(){
 function activateCard(element){
 	element.unbind();
 	element.click(function(){
-		var name;
 		if(selectedElement){
 			if(selectedElement==element){
 				selectedElement=undefined;
 			}else{
-				if(action=='exchange'){
-					name = element.children('.name').text();
-					exchange(selectedElement,element)
-				}else{
+				//if(action=='exchange){
+					//discard
+					discard(selectedElement,element.attr('id'));
 					selectedElement=undefined;
-				}
+				//}else{
+					//selectedElement=undefined;
+				//}
 			}
 		}else{
 			//take card
 			if(element.attr('class')=='card'){
 				if(hand.length<6/*&&action=='exchange'*/){
-					exchange(element.attr('id'))
+					take(element.attr('id'))
 				}
 			//store in bag
 			}else if(action=='store'){
@@ -159,11 +160,11 @@ function updateInventory(div,arr,name){
 		name=good.name;
 		penalty=good.penalty;
 		curDiv=$('<div></div>');
-		curDiv.append('<p>value: '+value+'</p>');
-		curDiv.append('<p class="name">'+name+'</p>');
-		curDiv.append('<p>penalty: '+penalty+'</p>');
+		curDiv.append($('<p>value: '+value+'</p>'));
+		curDiv.append($('<p>'+name+'</p>').addClass('name'));
+		curDiv.append($('<p>penalty: '+penalty+'</p>'));
 		div.append(curDiv);
-		activateCard(div);
+		activateCard(curDiv);
 	}
 }
 //function to update each deck
@@ -184,33 +185,30 @@ function updateDeck(div,data,faceDown){
 			var card = data[data.length-1];
 			div.css('background-color','#fff');
 			div.css('color','#000');
-			div.append('<p>value: '+card.value+'</p>');
-			div.append('<p class="name">'+card.name+'</p>');
-			div.append('<p>penalty: '+card.penalty+'</p>');
+			div.append($('<p>value: '+card.value+'</p>'));
+			div.append($('<p>'+card.name+'</p>').addClass('name'));
+			div.append($('<p>penalty: '+card.penalty+'</p>'));
 		}
 	}
 	activateCard(div);
 }
 
 //exchange cards
-function exchange(from,to){
-	//discard
-	if(to){
-		var name = from.children('.name').text();
-		$.ajax({
-			method:'POST',
-			url:'/discard',
-			datatype: 'json',
-			data:{'name':name,'deck':to}
-		});
-	}else{
-	//take from
-		$.ajax({
-			method:'POST',
-			url:'/take',
-			data:{'deck':from}
-		});
-	}
+function take(from){
+	$.ajax({
+		method:'POST',
+		url:'/take',
+		data:{'deck':from}
+	});
+}
+function discard(from,to){
+	var name = from.children('.name').text();
+	$.ajax({
+		method:'POST',
+		url:'/discard',
+		datatype: 'json',
+		data:{'name':name,'deck':to}
+	});
 }
 //smuggler actions
 function bribe(offer){
