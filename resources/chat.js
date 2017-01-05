@@ -1,5 +1,8 @@
-//socket.io chat function
-//used to serve different types of communication between players
+/*
+author:Robin Luo
+Purpose: Server side of Socket.IO to receive and emit information
+acts as chat feature for players and alerts players of upates
+*/
 
 function connect(io,users){
 	io.on("connection", function(socket){

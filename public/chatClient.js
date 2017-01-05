@@ -1,3 +1,7 @@
+/*
+author:Robin Luo
+Purpose: Socket.IO for Client side
+*/
 function connect(){
 	var socket = io();
 	socket.on('connect', function(){

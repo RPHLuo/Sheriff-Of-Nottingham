@@ -1,5 +1,7 @@
-//authentication.js
-//simple reusable module to deal with sign up, sign in and authentication with cookies
+/*
+author:Robin Luo
+Purpose: simple reusable module to deal with sign up, sign in and authentication with cookies
+*/
 
 function signin(req,res,users){
 	if(req.cookies.username){

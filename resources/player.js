@@ -1,3 +1,8 @@
+/*
+Author: Robin Luo
+Purpose:collection of functions dealing with game logic and player statistics
+*/
+//constructor
 function player(){
 	this.money=50;
 	this.hand=[];
@@ -121,6 +126,7 @@ function passThrough(player,sheriff){
 	}
 	player.softReset();
 }
+//add turn card into statistic or add contraband to player's contraband list
 function addGood(player,good){
 	if(good.name=='apple'){
 		player.apple++;

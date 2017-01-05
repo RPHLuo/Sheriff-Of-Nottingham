@@ -1,3 +1,8 @@
+/*
+author:Robin Luo
+Purpose: Simple file to construct and shuffle cards objects 
+*/
+
 function apple(){
 	this.name="apple";
 	this.value=2;

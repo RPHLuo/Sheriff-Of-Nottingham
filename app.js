@@ -1,7 +1,10 @@
-//Robin Luo
-//game of Nottingham game
-//Interactive web app to run game of Nottingham
-
+/*
+Robin Luo
+app: Sheriff of Nottingham game
+Interactive web app to run game of Nottingham
+Server side to store player's information and direct them
+Uses Express and Socket.io
+*/
 var express = require("express");
 var game = express();
 var cookieParser = require('cookie-parser');

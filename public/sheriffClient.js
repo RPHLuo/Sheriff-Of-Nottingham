@@ -1,3 +1,9 @@
+/*
+Author: Robin Luo
+app: Sheriff of Nottingham
+Purpose: Client code to interact and send AJAX requests and update UI
+*/
+
 var action,selectedFood='',selectedPlayer='',selectedElement,bag=[],hand=[];
 $(document).ready(function(){
 	//buttons from UI

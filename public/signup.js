@@ -1,3 +1,7 @@
+/*
+author:Robin Luo
+Purpose:Client side code to register
+*/
 $(document).ready(function(){
 	$("#signup").click(function(){
 		var username = $("#username").val();
